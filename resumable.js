@@ -121,6 +121,19 @@
     $.on = function(event,callback){
       $.events.push(event.toLowerCase(), callback);
     };
+    $.off = function(event,callback){
+      // `arguments` is an object, not array, in FF, so:
+      var args = [];
+      for (var i=0; i<arguments.length; i++) args.push(arguments[i]);
+      // Find event listeners, and support pseudo-event `catchAll`
+      var event = args[0].toLowerCase();
+      for (var i=0; i<=$.events.length; i+=2) {
+        if($.events[i]==event && $.events[i+1] == callback) {
+          $.events.splice(i, 2);
+          i-=2;
+        }
+      }
+    };
     $.fire = function(){
       // `arguments` is an object, not array, in FF, so:
       var args = [];
