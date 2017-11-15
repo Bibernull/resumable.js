@@ -25,6 +25,8 @@ To allow files to be selected and drag-dropped, you need to assign a drop target
     r.assignBrowse(document.getElementById('browseButton'));
     r.assignDrop(document.getElementById('dropTarget'));
 
+It is recommended to use an HTML span for the browse button.  Using an actual button does not work reliably across all browsers, because Resumable.js creates the file input as a child of this control, and this may be invalid in the case of an HTML button.
+
 After this, interaction with Resumable.js is done by listening to events:
 
     r.on('fileAdded', function(file, event){
@@ -119,7 +121,7 @@ adding the file. (Default: `null`)
 * `chunkRetryInterval` The number of milliseconds to wait before retrying a chunk on a non-permanent error.  Valid values are any positive integer and `undefined` for immediate retry.  (Default: `undefined`)
 * `withCredentials` Standard CORS requests do not send or set any cookies by default. In order to include cookies as part of the request, you need to set the `withCredentials` property to true. (Default: `false`)
 * `xhrTimeout` The timeout in milliseconds for each request (Default: `0`)
-
+* `setChunkTypeFromFile` Set chunk content-type from original file.type. (Default: `false`, if `false` default Content-Type: `application/octet-stream`)
 #### Properties
 
 * `.support` A boolean value indicator whether or not Resumable.js is supported by the current browser.
@@ -128,7 +130,7 @@ adding the file. (Default: `null`)
 
 #### Methods
 
-* `.assignBrowse(domNodes, isDirectory)` Assign a browse action to one or more DOM nodes.  Pass in `true` to allow directories to be selected (Chrome only).
+* `.assignBrowse(domNodes, isDirectory)` Assign a browse action to one or more DOM nodes.  Pass in `true` to allow directories to be selected (Chrome only).  See the note above about using an HTML span instead of an actual button.
 * `.assignDrop(domNodes)` Assign one or more DOM nodes as a drop target.
 * `.on(event, callback)` Listen for event from Resumable.js (see below)
 * `.upload()` Start or resume uploading.
@@ -137,6 +139,7 @@ adding the file. (Default: `null`)
 * `.progress()` Returns a float between 0 and 1 indicating the current upload progress of all files.
 * `.isUploading()` Returns a boolean indicating whether or not the instance is currently uploading anything.
 * `.addFile(file)` Add a HTML5 File object to the list of files.
+* `.addFiles(files)` Add an Array of HTML5 File objects to the list of files.
 * `.removeFile(file)` Cancel upload of a specific `ResumableFile` object on the list from the list.
 * `.getFromUniqueIdentifier(uniqueIdentifier)` Look up a `ResumableFile` object by its unique identifier.
 * `.getSize()` Returns the total size of the upload in bytes.

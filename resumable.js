@@ -69,7 +69,8 @@
       withCredentials:false,
       xhrTimeout:0,
       clearInput:true,
-	  chunkFormat:'blob',
+      chunkFormat:'blob',
+      setChunkTypeFromFile:false,
       maxFilesErrorCallback:function (files, errorCount) {
         var maxFiles = $.getOpt('maxFiles');
         alert('Please upload no more than ' + maxFiles + ' file' + (maxFiles === 1 ? '' : 's') + ' at a time.');
@@ -268,7 +269,7 @@
       if('function' === typeof item.getAsFile){
         // item represents a File object, convert it
         item = item.getAsFile();
-        if(null !== item){
+        if(item !== null) {
           item.relativePath = path + item.name;
           items.push(item);
         }
@@ -767,7 +768,7 @@
         });
 
         var func = ($.fileObj.file.slice ? 'slice' : ($.fileObj.file.mozSlice ? 'mozSlice' : ($.fileObj.file.webkitSlice ? 'webkitSlice' : 'slice')));
-        var bytes = $.fileObj.file[func]($.startByte, $.endByte);
+        var bytes = $.fileObj.file[func]($.startByte, $.endByte, $.getOpt('setChunkTypeFromFile') ? $.fileObj.file.type : "");
         var data = null;
         var params = [];
 
@@ -960,6 +961,13 @@
         } else {
           input.removeAttribute('webkitdirectory');
         }
+        var fileTypes = $.getOpt('fileType');
+        if (typeof (fileTypes) !== 'undefined' && fileTypes.length >= 1) {
+          input.setAttribute('accept', fileTypes.map(function (e) { return '.' + e }).join(','));
+        }
+        else {
+          input.removeAttribute('accept');
+        }
         // When new files are added, simply append them to the overall list
         input.addEventListener('change', function(e){
           appendFilesFromFileList(e.target.files,e);
@@ -1033,6 +1041,9 @@
     };
     $.addFile = function(file, event){
       appendFilesFromFileList([file], event);
+    };
+    $.addFiles = function(files, event){
+      appendFilesFromFileList(files, event);
     };
     $.removeFile = function(file){
       for(var i = $.files.length - 1; i >= 0; i--) {

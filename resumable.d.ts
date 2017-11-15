@@ -100,7 +100,7 @@ declare module Resumable  {
     /**
      * Override the function that generates unique identifiers for each file. (Default: null)
      **/
-    generateUniqueIdentifier?: () => string;
+    generateUniqueIdentifier?: (file: File, event: Event) => Promise<string> | string;
     /**
      * Indicates how many files can be uploaded in a single session. Valid values are any positive integer and undefined for no limit. (Default: undefined)
      **/
@@ -145,6 +145,10 @@ declare module Resumable  {
      * Standard CORS requests do not send or set any cookies by default. In order to include cookies as part of the request, you need to set the withCredentials property to true. (Default: false)
      **/
     withCredentials?: boolean;
+    /**
+     * setChunkTypeFromFile` Set chunk content-type from original file.type. (Default: false, if false default Content-Type: application/octet-stream)
+     **/
+    setChunkTypeFromFile?: boolean;
   }
   
   export class Resumable {
@@ -204,6 +208,10 @@ declare module Resumable  {
      * Add a HTML5 File object to the list of files.
      **/
     addFile(file: File): void;
+    /**
+     * Add an Array of HTML5 File objects to the list of files.
+     **/
+    addFiles(files: Array<File>): void;
     /**
      * Cancel upload of a specific ResumableFile object on the list from the list.
      **/
